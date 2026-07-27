@@ -14,14 +14,14 @@
 
 @theme {
   --color-paper: #f7f3ed;
-  --color-ink: #211f1d;
-  --color-paprika: #c1502d;
+  --color-ink: #1c1b19;
+  --color-paprika: #e05a2d;
   --color-herb: #5b6b4f;
   --color-mustard: #d9a441;
 
   --color-background: var(--color-paper);
-  --color-foreground: var(--color-ink);       /* headings (full contrast) */
-  --color-foreground-muted: #6b6357;          /* body text (softer, easier to read at length) */
+  --color-foreground: var(--color-ink);
+  --color-foreground-muted: #6b6357;
   --color-primary: var(--color-paprika);
   --color-secondary: var(--color-herb);
   --color-accent: var(--color-mustard);
@@ -51,10 +51,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* shadcn semantic tokens repointed to our kraft-paper/paprika palette
-     instead of the generated oklch grayscale defaults. Anything not
-     overridden here (card, popover, ring, chart-*, sidebar-*) stays on
-     shadcn's default — revisit only when a component actually uses it. */
   --background: var(--color-paper);
   --foreground: var(--color-ink);
   --card: var(--color-paper);
@@ -74,7 +70,6 @@
   --input: var(--color-border);
   --ring: var(--color-paprika);
 
-  /* Left on shadcn defaults until charts/sidebar are actually used */
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

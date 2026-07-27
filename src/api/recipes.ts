@@ -19,3 +19,7 @@ export function getRecipeById(id: number) {
 export function searchRecipes(query: string, params: GetRecipesParams = {}) {
   return apiRequest<RecipesResponse>('/recipes/search', { params: { q: query, ...params } });
 }
+
+export function getRecipeTags() {
+  return apiRequest<string[]>('/recipes/tags');
+}
