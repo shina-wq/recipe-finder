@@ -9,4 +9,6 @@ export const recipeKeys = {
   details: () => [...recipeKeys.all, 'detail'] as const,
   detail: (id: number) => [...recipeKeys.details(), id] as const,
   tags: () => [...recipeKeys.all, 'tags'] as const,
+  mealType: (type: string, params: GetRecipesParams = {}) =>
+  [...recipeKeys.all, 'mealType', type, params] as const,
 };

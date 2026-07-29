@@ -23,3 +23,7 @@ export function searchRecipes(query: string, params: GetRecipesParams = {}) {
 export function getRecipeTags() {
   return apiRequest<string[]>('/recipes/tags');
 }
+
+export function getRecipesByMealType(mealType: string, params: GetRecipesParams = {}) {
+  return apiRequest<RecipesResponse>(`/recipes/meal-type/${mealType}`, { params });
+}
