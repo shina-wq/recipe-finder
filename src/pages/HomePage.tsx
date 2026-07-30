@@ -6,7 +6,7 @@ export function HomePage() {
   return (
     <>
       <Hero />
-      <div className="bg-white">
+      <div className="bg-white pb-16">
         <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 space-y-16">
           <ExploreCategories />
           <FeaturedRecipes />
