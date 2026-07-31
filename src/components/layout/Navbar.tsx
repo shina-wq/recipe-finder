@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import {Link, NavLink} from "react-router-dom"
-import { Search, UtensilsCrossed, X, MenuIcon } from "lucide-react"
+import { UtensilsCrossed, X, MenuIcon } from "lucide-react"
 import {Button} from "@/components/ui/button"
-import {Input} from "@/components/ui/input"
 import {cn} from "@/lib/utils"
 
 const NAV_LINKS = [
@@ -11,15 +10,8 @@ const NAV_LINKS = [
 ] as const
 
 export function Navbar() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    if (isSearchOpen) inputRef.current?.focus()
-  }, [isSearchOpen])
-
-  const closeSearch = () => setIsSearchOpen(false)
   const closeMenu = () => setIsMenuOpen(false)
 
   const navLinkClass = ({ isActive}: {isActive: boolean}) =>
@@ -47,42 +39,7 @@ export function Navbar() {
           ))}
         </div>
 
-        {/* search */}
         <div className="flex items-center gap-3">
-          {isSearchOpen ? (
-            <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-150">
-              <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    ref={inputRef}
-                    type="search"
-                    placeholder="Search recipes..."
-                    className="w-40 rounded-full pl-9 sm:w-64"
-                    onBlur={(e) => !e.target.value && closeSearch()}
-                    onKeyDown={(e) => e.key === "Escape" && closeSearch}
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={closeSearch}
-                    aria-label="Close search"
-                  >
-                    <X className="size-4"/>
-                  </Button>
-                </div>
-            </div>
-          ) : (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsSearchOpen(true)}
-              aria-label="Open search"
-            >
-              <Search className="size-5" />
-            </Button>
-          )}
-
           {/* Desktop auth actions */}
           <Link
             to="/sign-in"

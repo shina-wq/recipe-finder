@@ -1,17 +1,16 @@
-import { useState, type FormEvent } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Search } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { getRecipeTags } from "@/api/recipes"
 import { recipeKeys } from "@/lib/queryKeys"
+import { useSearchNavigation } from "@/hooks/useSearchNavigation"
 
 const TRENDING_TAG_COUNT = 4
 
 export function Hero() {
-  const [query, setQuery] = useState("")
+  const {query, setQuery, submitNow} = useSearchNavigation()
 
   const {data: tags} = useQuery({
     queryKey: recipeKeys.tags(),
@@ -20,12 +19,6 @@ export function Hero() {
   })
 
   const trendingTags = tags?.slice(0, TRENDING_TAG_COUNT) ?? []
-
-  // TODO: wire to the recipes route for search/filtering
-  const handleSearch = (e: FormEvent) => {
-    e.preventDefault()
-    console.log("search:", query)
-  }
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 sm:py-28">
@@ -41,7 +34,7 @@ export function Hero() {
         favorite meal today.
       </p>
 
-      <form onSubmit={handleSearch} className="mx-auto mt-8 flex max-w-xl gap-2">
+      <form onSubmit={submitNow} className="mx-auto mt-8 flex max-w-xl gap-2">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input

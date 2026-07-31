@@ -1,4 +1,3 @@
-// src/components/layout/Footer.tsx
 import { Link } from "react-router-dom"
 import { UtensilsCrossed } from "lucide-react"
 
