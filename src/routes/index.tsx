@@ -14,7 +14,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "recipes/:id", element: <RecipeDetailsPage /> },
-      { path: "categories/:mealType?", element: <CategoriesPage /> },
+      { path: "categories/:mealType", element: <CategoriesPage /> },
       { path: "favorites", element: <FavoritesPage /> },
       { path: "sign-in", element: <SignInPage />},
       { path: "sign-up", element: <SignUpPage /> },
