@@ -1,26 +1,31 @@
 import { useEffect, useState, type FormEvent } from "react"
-import { useNavigate } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 import { useDebouncedValue } from "./useDebouncedValue"
 
 const MIN_QUERY_LENGTH = 2
-const DEBOUNCE_MS = 400
+const DEBOUNCE_MS = 500
 
 export function useSearchNavigation() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [query, setQuery] = useState("")
   const debouncedQuery = useDebouncedValue(query, DEBOUNCE_MS)
-  const navigate = useNavigate()
 
   useEffect(() => {
     const trimmed = debouncedQuery.trim()
-    if (trimmed.length >= MIN_QUERY_LENGTH) {
-      navigate(`/recipes/search?q=${encodeURIComponent(trimmed)}`)
-    }
-  }, [debouncedQuery, navigate])
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        trimmed.length >= MIN_QUERY_LENGTH ? next.set("q", trimmed) : next.delete("q")
+        return next
+      },
+      {replace: true},
+    )
+  }, [debouncedQuery, setSearchParams])
 
   const submitNow = (e: FormEvent) => {
     e.preventDefault()
     const trimmed = query.trim()
-    if (trimmed) navigate(`/recipes/search?q=${encodeURIComponent(trimmed)}`)
+    if (trimmed) setSearchParams({q: trimmed})
   }
 
   return { query, setQuery, submitNow }
