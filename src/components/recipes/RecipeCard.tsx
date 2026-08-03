@@ -3,6 +3,8 @@ import { Clock, Heart, Star } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import type { Recipe } from "@/types/recipe"
+import { useFavorites } from "@/hooks/useFavorites"
+import { cn } from "@/lib/utils"
 
 interface RecipeCardProps {
   recipe: Recipe
@@ -13,6 +15,9 @@ const QUICK_THRESHOLD_MINUTES = 20
 export function RecipeCard({ recipe }: RecipeCardProps) {
   const totalTime = recipe.prepTimeMinutes + recipe.cookTimeMinutes
   const isQuick = totalTime <= QUICK_THRESHOLD_MINUTES
+
+  const {isFavorite, toggleFavorite} = useFavorites()
+  const favorited = isFavorite(recipe.id)
 
   return (
     <Card className="group relative gap-0 overflow-hidden rounded-2xl border-none p-0 shadow-card transition-shadow hover:shadow-lg">
@@ -37,14 +42,14 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
 
         <button
           type="button"
-          aria-label={`Save ${recipe.name}`}
+          aria-label={favorited ? `Remove ${recipe.name} from favorites` : `Save ${recipe.name}`}
           onClick={(e) => {
             e.preventDefault()
-            // TODO: wire to favorites once that store/API exists
+            toggleFavorite(recipe.id)
           }}
-          className="absolute top-3 right-3 z-20 flex size-8 items-center justify-center rounded-full bg-white/90 text-foreground-muted shadow-card transition-colors hover:text-primary"
+          className="absolute top-3 right-3 z-20 flex size-8 items-center justify-center rounded-full bg-white/90 text-foreground-muted shadow-card transition-colors hover:text-primary cursor-pointer"
         >
-          <Heart className="size-4" />
+          <Heart className={cn("size-4", favorited && "fill-primary text-primary")} />
         </button>
       </div>
 
