@@ -1,6 +1,6 @@
 import { Hero } from "@/components/home/Hero"
 import { ExploreCategories } from "@/components/home/ExploreCategories"
-import { FeaturedRecipes } from "@/components/home/FeaturedRecipes"
+import {AllRecipes} from "@/components/home/AllRecipes"
 import { useSearchParams } from "react-router-dom"
 import { SearchResults } from "@/components/home/SearchResults"
 
@@ -18,7 +18,7 @@ export function HomePage() {
           ) : (
             <>
               <ExploreCategories />
-              <FeaturedRecipes />
+              <AllRecipes />
             </>
           )}
         </main>

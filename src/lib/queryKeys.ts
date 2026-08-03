@@ -11,4 +11,6 @@ export const recipeKeys = {
   tags: () => [...recipeKeys.all, 'tags'] as const,
   mealType: (type: string, params: GetRecipesParams = {}) =>
   [...recipeKeys.all, 'mealType', type, params] as const,
+  infiniteList: (params: GetRecipesParams = {}) =>
+    [...recipeKeys.all, 'infinite-list', params] as const,
 };
