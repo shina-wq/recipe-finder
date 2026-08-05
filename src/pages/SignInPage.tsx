@@ -1,8 +1,11 @@
+import { LoginForm } from "@/components/auth/login-form"
+
 export function SignInPage() {
   return (
-    <main className="mx-auto flex max-w-md flex-col gap-4 px-4 py-16 sm:px-6">
-      <h1 className="font-display text-2xl font-bold text-foreground">Sign in</h1>
-      <p className="text-foreground-muted">Placeholder.</p>
-    </main>
+    <div className="flex min-h-[calc(100vh-4rem)] w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <LoginForm />
+      </div>
+    </div>
   )
 }
