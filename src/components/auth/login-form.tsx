@@ -1,23 +1,15 @@
 import { useState } from "react"
-import type { ComponentProps } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate } from "react-router-dom"
-import { Loader2 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { ArrowRight, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { signInSchema, type SignInValues } from "@/lib/schemas/auth"
+import { AUTH_INPUT_CLASS, AUTH_LABEL_CLASS } from "./authFieldStyles"
 
-export function LoginForm({ className, ...props }: ComponentProps<"div">) {
+export function LoginForm() {
   const navigate = useNavigate()
   const [serverError, setServerError] = useState<string | null>(null)
 
@@ -40,68 +32,55 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="bg-white">
-        <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>Enter your email below to login to your account</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <FieldGroup>
-              <Field data-invalid={!!errors.email}>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  aria-invalid={!!errors.email}
-                  {...register("email")}
-                  className="border-1"
-                />
-                <FieldError errors={errors.email ? [errors.email] : undefined} />
-              </Field>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <FieldGroup>
+        <Field data-invalid={!!errors.email}>
+          <FieldLabel htmlFor="email" className={AUTH_LABEL_CLASS}>
+            Email address
+          </FieldLabel>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            aria-invalid={!!errors.email}
+            {...register("email")}
+            className={AUTH_INPUT_CLASS}
+          />
+          <FieldError errors={errors.email ? [errors.email] : undefined} />
+        </Field>
 
-              <Field data-invalid={!!errors.password}>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  {/* TODO: no forgot-password flow yet */}
-                  <Link
-                    to="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="********"
-                  aria-invalid={!!errors.password}
-                  {...register("password")}
-                  className="border-1"
-                />
-                <FieldError errors={errors.password ? [errors.password] : undefined} />
-              </Field>
+        <Field data-invalid={!!errors.password}>
+          <div className="flex items-center">
+            <FieldLabel htmlFor="password" className={AUTH_LABEL_CLASS}>
+              Password
+            </FieldLabel>
+            {/* TODO: no forgot-password flow yet */}
+            <Link to="#" className="ml-auto text-sm text-primary underline-offset-4 hover:underline">
+              Forgot password?
+            </Link>
+          </div>
+          <Input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            aria-invalid={!!errors.password}
+            {...register("password")}
+            className={AUTH_INPUT_CLASS}
+          />
+          <FieldError errors={errors.password ? [errors.password] : undefined} />
+        </Field>
 
-              <Field>
-                {serverError && (
-                  <p role="alert" className="text-sm text-error">
-                    {serverError}
-                  </p>
-                )}
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting && <Loader2 className="size-4 animate-spin" />}
-                  Login
-                </Button>
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account? <Link to="/sign-up">Sign up</Link>
-                </FieldDescription>
-              </Field>
-            </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+        {serverError && (
+          <p role="alert" className="text-sm text-error">
+            {serverError}
+          </p>
+        )}
+
+        <Button type="submit" disabled={isSubmitting} size="lg" className="h-11 w-full rounded-full">
+          {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : "Sign in"}
+          {!isSubmitting && <ArrowRight className="size-4" data-icon="inline-end" />}
+        </Button>
+      </FieldGroup>
+    </form>
   )
 }

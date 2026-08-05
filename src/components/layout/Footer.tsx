@@ -17,7 +17,7 @@ export function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="mt-4 bg-background">
+    <footer className="mt-4 bg-ink text-paper/70">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-[2fr_1fr_1fr]">
           {/* Brand column */}
@@ -26,17 +26,15 @@ export function Footer() {
               <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                 <UtensilsCrossed className="size-4" />
               </span>
-              <span className="font-display text-xl font-bold text-foreground">Forkful</span>
+              <span className="font-display text-xl font-bold text-paper">Forkful</span>
             </Link>
 
-            <p className="mt-4 max-w-xs text-sm text-foreground-muted">
+            <p className="mt-4 max-w-xs text-sm text-paper/60">
               Your gateway to culinary inspiration. Discover, save, and create delicious meals
               from around the world.
             </p>
 
-            {/* Lucide dropped brand/logo icons, so these three are inline SVGs (currentColor
-                lets them inherit the hover:text-primary styling like any lucide icon would). */}
-            <div className="mt-4 flex items-center gap-3 text-muted-foreground">
+            <div className="mt-4 flex items-center gap-3 text-paper/60">
               <a href="#" aria-label="Instagram" className="hover:text-primary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="size-5">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -59,8 +57,8 @@ export function Footer() {
 
           {/* Explore column */}
           <nav aria-label="Explore">
-            <h3 className="font-display font-semibold text-foreground">Explore</h3>
-            <ul className="mt-4 space-y-3 text-sm text-foreground-muted">
+            <h3 className="font-display font-semibold text-paper">Explore</h3>
+            <ul className="mt-4 space-y-3 text-sm text-paper/60">
               {EXPLORE_LINKS.map((link) => (
                 <li key={link.label}>
                   <Link to={link.to} className="hover:text-primary">
@@ -73,8 +71,8 @@ export function Footer() {
 
           {/* Resources column */}
           <nav aria-label="Resources">
-            <h3 className="font-display font-semibold text-foreground">Resources</h3>
-            <ul className="mt-4 space-y-3 text-sm text-foreground-muted">
+            <h3 className="font-display font-semibold text-paper">Resources</h3>
+            <ul className="mt-4 space-y-3 text-sm text-paper/60">
               {RESOURCE_LINKS.map((link) => (
                 <li key={link.label}>
                   <a href={link.to} className="hover:text-primary">
@@ -86,7 +84,7 @@ export function Footer() {
           </nav>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-2 border-t border-paper/10 pt-6 text-xs text-paper/50 sm:flex-row sm:items-center sm:justify-between">
           <span>© {year} Forkful. All rights reserved.</span>
         </div>
       </div>

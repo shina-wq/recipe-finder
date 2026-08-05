@@ -25,6 +25,7 @@
   --color-primary: var(--color-paprika);
   --color-secondary: var(--color-herb);
   --color-accent: var(--color-mustard);
+  --color-ink-foreground: var(--color-paper);
   --color-muted: #8a8478;
   --color-border: #e3ddd2;
 
