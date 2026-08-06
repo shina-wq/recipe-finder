@@ -29,7 +29,8 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   const res = await fetch(url, init);
 
   if (!res.ok) {
-    throw new ApiError(`Request failed: ${res.statusText}`, res.status, url.toString());
+    const body = await res.json().catch(() => null);
+    throw new ApiError(body?.message ?? res.statusText, res.status, url.toString());
   }
 
   return res.json() as Promise<T>;

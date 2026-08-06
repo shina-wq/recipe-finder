@@ -20,7 +20,7 @@ export function CategoriesPage() {
 
   if (!category) {
     return (
-      <div className="bg-white">
+      <div className="bg-background/95">
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 text-center">
           <p className="text-foreground-muted">
             "{mealType}" isn't a category we recognize.
@@ -39,7 +39,7 @@ export function CategoriesPage() {
   })
 
   return (
-    <div className="bg-white">
+    <div className="bg-background/95">
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <Breadcrumb>
           <BreadcrumbList>

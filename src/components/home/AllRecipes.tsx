@@ -62,7 +62,6 @@ export function AllRecipes() {
         </div>
       )}
 
-      {/* Sentinel doubles as the "keep loading" indicator; unmounts once hasNextPage is false */}
       {hasNextPage && (
         <div ref={targetRef} className="mt-8 flex justify-center py-4">
           <Loader2 className="size-6 animate-spin text-primary" />
