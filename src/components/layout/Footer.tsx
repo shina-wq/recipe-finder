@@ -2,9 +2,9 @@ import { Link } from "react-router-dom"
 import { UtensilsCrossed } from "lucide-react"
 
 const EXPLORE_LINKS = [
-  { label: "Discover Recipes", to: "/recipes" },
-  { label: "Search", to: "/recipes" }, // TODO: point at a dedicated search route if one gets built
-  { label: "My Favorites", to: "/favorites" }, // TODO: route doesn't exist yet
+  { label: "Discover Recipes", to: "/" },
+  { label: "Search", to: "/" },
+  { label: "My Favorites", to: "/favorites" },
 ]
 
 const RESOURCE_LINKS = [
@@ -57,7 +57,7 @@ export function Footer() {
 
           {/* Explore column */}
           <nav aria-label="Explore">
-            <h3 className="font-display font-semibold text-paper">Explore</h3>
+            <h3 className="font-display font-semibold text-white">Explore</h3>
             <ul className="mt-4 space-y-3 text-sm text-paper/60">
               {EXPLORE_LINKS.map((link) => (
                 <li key={link.label}>
@@ -71,7 +71,7 @@ export function Footer() {
 
           {/* Resources column */}
           <nav aria-label="Resources">
-            <h3 className="font-display font-semibold text-paper">Resources</h3>
+            <h3 className="font-display font-semibold text-white">Resources</h3>
             <ul className="mt-4 space-y-3 text-sm text-paper/60">
               {RESOURCE_LINKS.map((link) => (
                 <li key={link.label}>

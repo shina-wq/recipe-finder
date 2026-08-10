@@ -20,7 +20,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
   const favorited = isFavorite(recipe.id)
 
   return (
-    <Card className="group relative gap-0 overflow-hidden rounded-2xl border-none p-0 shadow-card transition-shadow hover:shadow-lg">
+    <Card className="group relative gap-0 overflow-hidden rounded-2xl border-none p-0 bg-white shadow-card transition-shadow hover:shadow-lg">
       <Link
         to={`/recipes/${recipe.id}`}
         className="absolute inset-0 z-10"
