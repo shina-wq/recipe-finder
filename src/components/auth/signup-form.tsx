@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "react-router-dom"
-import { ArrowRight, Loader2 } from "lucide-react"
+import { ArrowRight, Loader2, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -12,6 +12,7 @@ import { authStore } from "@/lib/authStore"
 import type { AuthUser } from "@/types/user"
 import { signUpSchema, type SignUpValues } from "@/lib/schemas/auth"
 import { AUTH_INPUT_CLASS, AUTH_LABEL_CLASS } from "./authFieldStyles"
+import {cn} from "@/lib/utils"
 
 // DummyJSON's /users/add wants firstName/lastName separately; our form
 // collects one "full name" field, so split it on the first space.
@@ -23,6 +24,8 @@ function splitName(fullName: string) {
 export function SignupForm() {
   const navigate = useNavigate()
   const [serverError, setServerError] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const {
     register,
@@ -118,14 +121,26 @@ export function SignupForm() {
             <FieldLabel htmlFor="password" className={AUTH_LABEL_CLASS}>
               Password
             </FieldLabel>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              aria-invalid={!!errors.password}
-              {...register("password")}
-              className={AUTH_INPUT_CLASS}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                aria-invalid={!!errors.password}
+                {...register("password")}
+                className={cn(AUTH_INPUT_CLASS, "pr-10")}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+                className="absolute top-1/2 right-3 -translate-y-1/2 text-foreground-muted hover:text-primary cursor-pointer"
+              >
+                {showPassword ? <EyeOff className="size-4"/> : <Eye className="size-4"/>}
+              </button>
+            </div>
+
             <FieldDescription>Must be at least 8 characters long.</FieldDescription>
             <FieldError errors={errors.password ? [errors.password] : undefined} />
           </Field>
@@ -134,14 +149,25 @@ export function SignupForm() {
             <FieldLabel htmlFor="confirm-password" className={AUTH_LABEL_CLASS}>
               Confirm password
             </FieldLabel>
-            <Input
-              id="confirm-password"
-              type="password"
-              placeholder="••••••••"
-              aria-invalid={!!errors.confirmPassword}
-              {...register("confirmPassword")}
-              className={AUTH_INPUT_CLASS}
-            />
+            <div className="relative">
+              <Input
+                id="confirm-password"
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="••••••••"
+                aria-invalid={!!errors.confirmPassword}
+                {...register("confirmPassword")}
+                className={cn(AUTH_INPUT_CLASS, "pr-10")}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword((v) => !v)}
+                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                aria-pressed={showConfirmPassword}
+                className="absolute top-1/2 right-3 -translate-y-1/2 text-foreground-muted hover:text-primary cursor-pointer"
+              >
+                {showConfirmPassword ? <EyeOff className="size-4"/> : <Eye className="size-4"/>}
+              </button>
+            </div>
             <FieldError errors={errors.confirmPassword ? [errors.confirmPassword] : undefined} />
           </Field>
 

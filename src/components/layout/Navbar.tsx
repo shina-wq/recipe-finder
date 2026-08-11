@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link, NavLink, useNavigate } from "react-router-dom"
-import { UtensilsCrossed, X, MenuIcon, LogOut } from "lucide-react"
+import { UtensilsCrossed, X, MenuIcon, LogOut, Bookmark, SettingsIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -8,7 +8,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -70,13 +69,36 @@ export function Navbar() {
                   <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel>
-                    {user.firstName} {user.lastName}
-                  </DropdownMenuLabel>
-                </DropdownMenuGroup>
+              <DropdownMenuContent align="end" className="w-64">
+                <div className="flex items-center gap-3 px-1.5 py-2">
+                  <Avatar className="size-9">
+                    <AvatarImage src={user.image} alt={user.username} />
+                    <AvatarFallback>{initials}</AvatarFallback>
+                  </Avatar>
+
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-foreground">
+                      {user.firstName} {user.lastName}
+                    </p>
+                    <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+                  </div>
+                </div>
+
                 <DropdownMenuSeparator />
+
+                <DropdownMenuGroup>
+                  <DropdownMenuItem render={<Link to="/favorites" />}>
+                    <Bookmark className="size-4" data-icon="inline-start" />
+                    Your shelf
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <SettingsIcon className="size-4" data-icon="inline-start" />
+                    Settings
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+
+                <DropdownMenuSeparator />
+
                 <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
                   <LogOut className="size-4" data-icon="inline-start" />
                   Sign out
