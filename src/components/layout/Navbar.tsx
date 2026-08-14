@@ -69,7 +69,7 @@ export function Navbar() {
                   <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64">
+              <DropdownMenuContent align="end" className="w-54 bg-white">
                 <div className="flex items-center gap-3 px-1.5 py-2">
                   <Avatar className="size-9">
                     <AvatarImage src={user.image} alt={user.username} />
