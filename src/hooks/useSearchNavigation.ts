@@ -6,7 +6,7 @@ const MIN_QUERY_LENGTH = 2
 const DEBOUNCE_MS = 500
 
 export function useSearchNavigation() {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [, setSearchParams] = useSearchParams()
   const [query, setQuery] = useState("")
   const debouncedQuery = useDebouncedValue(query, DEBOUNCE_MS)
 
