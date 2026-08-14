@@ -13,6 +13,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { RelatedRecipes } from "@/components/recipes/RelatedRecipes"
 import { cn } from "@/lib/utils"
 
@@ -26,7 +27,7 @@ export function RecipeDetailsPage() {
     enabled: !Number.isNaN(recipeId),
   })
 
-  const { isFavorite, toggleFavorite } = useFavorites()
+  const { isFavorite, toggleFavorite, canFavorite } = useFavorites()
 
   if (isLoading) {
     return (
@@ -87,14 +88,26 @@ export function RecipeDetailsPage() {
         <div className="mt-4 grid gap-8 md:grid-cols-2">
           <div className="relative aspect-4/3 overflow-hidden rounded-2xl shadow-card">
             <img src={recipe.image} alt={recipe.name} className="size-full object-cover" />
-            <button
-              type="button"
-              aria-label={favorited ? `Remove ${recipe.name} from favorites` : `Save ${recipe.name}`}
-              onClick={() => toggleFavorite(recipe.id)}
-              className="absolute top-3 right-3 flex size-9 items-center justify-center rounded-full bg-white/90 text-foreground-muted shadow-card transition-colors hover:text-primary cursor-pointer"
-            >
-              <Heart className={cn("size-4", favorited && "fill-primary text-primary")} />
-            </button>
+
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <button
+                    type="button"
+                    disabled={!canFavorite}
+                    aria-label={favorited ? `Remove ${recipe.name} from favorites` : `Save ${recipe.name}`}
+                    onClick={() => toggleFavorite(recipe.id)}
+                    className={cn(
+                      "absolute top-3 right-3 flex size-9 items-center justify-center rounded-full bg-white/90 text-foreground-muted shadow-card transition-colors",
+                      canFavorite ? "cursor-pointer hover:text-primary" : "cursor-not-allowed opacity-60",
+                    )}
+                  />
+                }
+              >
+                <Heart className={cn("size-4", favorited && "fill-primary text-primary")} />
+              </TooltipTrigger>
+              {!canFavorite && <TooltipContent>Sign in to save favorites</TooltipContent>}
+            </Tooltip>
           </div>
 
           <div className="flex flex-col">

@@ -1,19 +1,31 @@
-const STORAGE_KEY = "forkful:favorites"
+const STORAGE_PREFIX = "forkful:favorites:"
 
-function readFavorites(): Set<number> {
+const EMPTY_FAVORITES: ReadonlySet<number> = new Set()
+
+const cache = new Map<number, Set<number>>()
+const listeners = new Set<() => void>()
+
+function readFromStorage(userId: number): Set<number> {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    const raw = localStorage.getItem(`${STORAGE_PREFIX}${userId}`)
     return raw ? new Set(JSON.parse(raw)) : new Set()
   } catch {
     return new Set()
   }
 }
 
-let favorites = readFavorites()
-const listeners = new Set<() => void>()
+function getUserFavorites(userId: number): Set<number> {
+  let favorites = cache.get(userId)
+  if (!favorites) {
+    favorites = readFromStorage(userId)
+    cache.set(userId, favorites)
+  }
+  return favorites
+}
 
-function persist() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...favorites]))
+function persist(userId: number, favorites: Set<number>) {
+  cache.set(userId, favorites)
+  localStorage.setItem(`${STORAGE_PREFIX}${userId}`, JSON.stringify([...favorites]))
   listeners.forEach((listener) => listener())
 }
 
@@ -22,12 +34,15 @@ export const favoritesStore = {
     listeners.add(listener)
     return () => listeners.delete(listener)
   },
-  getSnapshot() {
-    return favorites
+  getSnapshot(userId: number | null): ReadonlySet<number> {
+    return userId === null ? EMPTY_FAVORITES : getUserFavorites(userId)
   },
-  toggle(id: number) {
-    favorites = new Set(favorites)
-    favorites.has(id) ? favorites.delete(id) : favorites.add(id)
-    persist()
+  toggle(userId: number, recipeId: number) {
+    const next = new Set(getUserFavorites(userId))
+    next.has(recipeId) ? next.delete(recipeId) : next.add(recipeId)
+    persist(userId, next)
+  },
+  clear(userId: number) {
+    persist(userId, new Set())
   },
 }
