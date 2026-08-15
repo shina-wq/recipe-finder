@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
 import { useQueries } from "@tanstack/react-query"
 import { Heart, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -19,28 +18,9 @@ import { useAuth } from "@/hooks/useAuth"
 import { useFavorites } from "@/hooks/useFavorites"
 import { getRecipeById } from "@/api/recipes"
 import { recipeKeys } from "@/lib/queryKeys"
+import { CenteredMessage } from "@/components/shared/CenteredMessage"
 
 const SKELETON_COUNT = 8
-
-interface CenteredMessageProps {
-  icon: React.ReactNode
-  message: string
-  ctaLabel: string
-  ctaTo: string
-  ctaVariant?: "default" | "outline"
-}
-
-function CenteredMessage({ icon, message, ctaLabel, ctaTo, ctaVariant = "default" }: CenteredMessageProps) {
-  return (
-    <div className="mt-16 flex flex-col items-center text-center">
-      {icon}
-      <p className="mt-4 max-w-sm text-foreground-muted">{message}</p>
-      <Button render={<Link to={ctaTo} />} variant={ctaVariant} className="mt-4 rounded-full px-6">
-        {ctaLabel}
-      </Button>
-    </div>
-  )
-}
 
 export function FavoritesPage() {
   const { isAuthenticated } = useAuth()

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link, NavLink, useNavigate } from "react-router-dom"
-import { UtensilsCrossed, X, MenuIcon, LogOut, Bookmark, SettingsIcon } from "lucide-react"
+import { UtensilsCrossed, X, MenuIcon, LogOut, SettingsIcon, ChefHat } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -87,9 +87,9 @@ export function Navbar() {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuGroup>
-                  <DropdownMenuItem render={<Link to="/favorites" />}>
-                    <Bookmark className="size-4" data-icon="inline-start" />
-                    Your shelf
+                  <DropdownMenuItem onClick={() => navigate("/my-recipes")}>
+                    <ChefHat className="size-4" data-icon="inline-start" />
+                    My recipes
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <SettingsIcon className="size-4" data-icon="inline-start" />
