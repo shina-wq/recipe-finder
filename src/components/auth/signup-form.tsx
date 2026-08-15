@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "react-router-dom"
-import { ArrowRight, Loader2, Eye, EyeOff } from "lucide-react"
+import { ArrowRight, Loader2, Eye, EyeOff, Check, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -12,7 +12,7 @@ import { authStore } from "@/lib/authStore"
 import type { AuthUser } from "@/types/user"
 import { signUpSchema, type SignUpValues } from "@/lib/schemas/auth"
 import { AUTH_INPUT_CLASS, AUTH_LABEL_CLASS } from "./authFieldStyles"
-import {cn} from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 // DummyJSON's /users/add wants firstName/lastName separately; our form
 // collects one "full name" field, so split it on the first space.
@@ -30,8 +30,15 @@ export function SignupForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    watch,
+    formState: { errors, isSubmitting, touchedFields },
   } = useForm<SignUpValues>({ resolver: zodResolver(signUpSchema) })
+
+  const password = watch("password")
+  const confirmPassword = watch("confirmPassword")
+  const confirmHasValue = confirmPassword?.length > 0
+  const passwordsMatch = confirmHasValue && password === confirmPassword
+  const showMismatch = confirmHasValue && !passwordsMatch && !!touchedFields.confirmPassword
 
   const onSubmit = async (values: SignUpValues) => {
     setServerError(null)
@@ -137,7 +144,7 @@ export function SignupForm() {
                 aria-pressed={showPassword}
                 className="absolute top-1/2 right-3 -translate-y-1/2 text-foreground-muted hover:text-primary cursor-pointer"
               >
-                {showPassword ? <EyeOff className="size-4"/> : <Eye className="size-4"/>}
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
               </button>
             </div>
 
@@ -145,7 +152,7 @@ export function SignupForm() {
             <FieldError errors={errors.password ? [errors.password] : undefined} />
           </Field>
 
-          <Field data-invalid={!!errors.confirmPassword}>
+          <Field data-invalid={showMismatch}>
             <FieldLabel htmlFor="confirm-password" className={AUTH_LABEL_CLASS}>
               Confirm password
             </FieldLabel>
@@ -154,10 +161,29 @@ export function SignupForm() {
                 id="confirm-password"
                 type={showConfirmPassword ? "text" : "password"}
                 placeholder="••••••••"
-                aria-invalid={!!errors.confirmPassword}
+                aria-invalid={showMismatch}
                 {...register("confirmPassword")}
-                className={cn(AUTH_INPUT_CLASS, "pr-10")}
+                className={cn(
+                  AUTH_INPUT_CLASS,
+                  "pr-16 transition-shadow",
+-                  passwordsMatch && "ring-2 ring-success/40",
+                  showMismatch && "ring-2 ring-destructive/30",
+                )}
               />
+
+              {/* Match/mismatch indicator, sits left of the visibility toggle */}
+              {confirmHasValue && (
+                <span
+                  className={cn(
+                    "absolute top-1/2 right-10 -translate-y-1/2 animate-in fade-in duration-150",
+                    passwordsMatch && "text-success",
+                    showMismatch && "text-error",
+                  )}
+                >
+                  {passwordsMatch ? <Check className="size-4" /> : showMismatch ? <X className="size-4" /> : null}
+                </span>
+              )}
+
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword((v) => !v)}
@@ -165,10 +191,28 @@ export function SignupForm() {
                 aria-pressed={showConfirmPassword}
                 className="absolute top-1/2 right-3 -translate-y-1/2 text-foreground-muted hover:text-primary cursor-pointer"
               >
-                {showConfirmPassword ? <EyeOff className="size-4"/> : <Eye className="size-4"/>}
+                {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
               </button>
             </div>
-            <FieldError errors={errors.confirmPassword ? [errors.confirmPassword] : undefined} />
+
+            {confirmHasValue && (passwordsMatch || showMismatch) && (
+              <p
+                className={cn(
+                  "mt-1 flex items-center gap-1 text-xs animate-in fade-in duration-150",
+                  passwordsMatch ? "text-success" : "text-error",
+                )}
+              >
+                {passwordsMatch ? "Passwords match" : "Passwords don't match"}
+              </p>
+            )}
+
+            <FieldError
+              errors={
+                errors.confirmPassword && errors.confirmPassword.message !== "Passwords don't match"
+                  ? [errors.confirmPassword]
+                  : undefined
+              }
+            />
           </Field>
 
           {serverError && (
