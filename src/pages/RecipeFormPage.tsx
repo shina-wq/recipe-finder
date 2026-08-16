@@ -121,16 +121,6 @@ export function RecipeFormPage() {
               <h1 className="font-display text-2xl font-bold text-foreground">
                 {isEditMode ? "Edit Recipe" : "New Recipe"}
               </h1>
-
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="rounded-full" render={<Link to="/my-recipes" />}>
-                  Cancel
-                </Button>
-                <Button type="submit" size="sm" className="rounded-full" disabled={isSubmitting}>
-                  {isSubmitting && <Loader2 className="size-3.5 animate-spin" />}
-                  Save
-                </Button>
-              </div>
             </div>
 
             {/* Basic Info */}
@@ -321,6 +311,17 @@ export function RecipeFormPage() {
                 />
               </div>
             </section>
+
+            {/* Actions */}
+            <div className="mt-10 -mx-4 flex justify-end gap-2 bg-background/95 px-4 py-4 backdrop-blur-sm sm:-mx-6 sm:px-6">
+              <Button variant="outline" size="sm" className="rounded-full" render={<Link to="/my-recipes" />}>
+                Cancel
+              </Button>
+              <Button type="submit" size="sm" className="rounded-full" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="size-3.5 animate-spin" />}
+                Save
+              </Button>
+            </div>
           </form>
         </RequireAuth>
       </main>
