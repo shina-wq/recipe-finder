@@ -7,6 +7,7 @@ import { FavoritesPage } from "@/pages/FavoritesPage"
 import { SignInPage } from "@/pages/SignInPage"
 import { SignUpPage } from "@/pages/SignUpPage"
 import { MyRecipesPage } from "@/pages/MyRecipesPage"
+import { RecipeFormPage } from "@/pages/RecipeFormPage"
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,8 @@ export const router = createBrowserRouter([
       { path: "categories/:mealType", element: <CategoriesPage /> },
       { path: "favorites", element: <FavoritesPage /> },
       { path: "my-recipes", element: <MyRecipesPage /> },
+      { path: "my-recipes/new", element: <RecipeFormPage /> },
+      { path: "my-recipes/:id/edit", element: <RecipeFormPage /> },
     ],
   },
   { path: "/sign-in", element: <SignInPage /> },

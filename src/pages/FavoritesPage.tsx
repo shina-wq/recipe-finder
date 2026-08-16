@@ -19,6 +19,7 @@ import { useFavorites } from "@/hooks/useFavorites"
 import { getRecipeById } from "@/api/recipes"
 import { recipeKeys } from "@/lib/queryKeys"
 import { CenteredMessage } from "@/components/shared/CenteredMessage"
+import { RequireAuth } from "@/components/auth/RequireAuth"
 
 const SKELETON_COUNT = 8
 
@@ -42,15 +43,7 @@ export function FavoritesPage() {
   const failedCount = results.filter((r) => r.isError).length
   const allFailed = favoriteIds.length > 0 && !isLoading && failedCount === favoriteIds.length
 
-  const state = !isAuthenticated
-    ? "unauthenticated"
-    : isLoading
-      ? "loading"
-      : allFailed
-        ? "error"
-        : favoriteIds.length === 0
-          ? "empty"
-          : "populated"
+  const state = isLoading ? "loading" : allFailed ? "error" : favoriteIds.length === 0 ? "empty" : "populated"
 
   const handleClearAll = () => {
     clearFavorites()
@@ -63,14 +56,14 @@ export function FavoritesPage() {
         <div className="flex items-center justify-between">
           <div className="flex items-baseline gap-3">
             <h1 className="font-display text-2xl font-bold text-foreground">Favorites</h1>
-            {state === "populated" && (
+            {isAuthenticated && state === "populated" && (
               <span aria-live="polite" className="text-sm text-foreground-muted">
                 {recipes.length} {recipes.length === 1 ? "recipe" : "recipes"}
               </span>
             )}
           </div>
 
-          {state === "populated" && (
+          {isAuthenticated && state === "populated" && (
             <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
               <AlertDialogTrigger render={<Button variant="outline" size="sm" className="rounded-full" />}>
                 Clear all
@@ -93,56 +86,54 @@ export function FavoritesPage() {
           )}
         </div>
 
-        {state === "unauthenticated" && (
-          <CenteredMessage
-            icon={<Heart className="size-10 text-muted-foreground" />}
-            message="Sign in to save and view your favorite recipes."
-            ctaLabel="Sign in"
-            ctaTo="/sign-in"
-          />
-        )}
+        <RequireAuth
+          icon={<Heart className="size-10 text-muted-foreground" />}
+          message="Sign in to save and view your favorite recipes."
+        >
+          <>
+            {state === "loading" && (
+              <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+                {Array.from({ length: Math.min(favoriteIds.length, SKELETON_COUNT) }).map((_, i) => (
+                  <div key={i} className="aspect-4/3 animate-pulse rounded-2xl bg-border" />
+                ))}
+              </div>
+            )}
 
-        {state === "loading" && (
-          <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-            {Array.from({ length: Math.min(favoriteIds.length, SKELETON_COUNT) }).map((_, i) => (
-              <div key={i} className="aspect-4/3 animate-pulse rounded-2xl bg-border" />
-            ))}
-          </div>
-        )}
+            {state === "error" && (
+              <CenteredMessage
+                icon={<AlertCircle className="size-10 text-error" />}
+                message="Couldn't load your favorites right now. Try refreshing."
+                ctaLabel="Refresh"
+                ctaTo="."
+                ctaVariant="outline"
+              />
+            )}
 
-        {state === "error" && (
-          <CenteredMessage
-            icon={<AlertCircle className="size-10 text-error" />}
-            message="Couldn't load your favorites right now. Try refreshing."
-            ctaLabel="Refresh"
-            ctaTo="."
-            ctaVariant="outline"
-          />
-        )}
+            {state === "empty" && (
+              <CenteredMessage
+                icon={<Heart className="size-10 text-muted-foreground" />}
+                message="No favorites yet. Tap the heart on any recipe to save it here."
+                ctaLabel="Explore recipes"
+                ctaTo="/"
+                ctaVariant="outline"
+              />
+            )}
 
-        {state === "empty" && (
-          <CenteredMessage
-            icon={<Heart className="size-10 text-muted-foreground" />}
-            message="No favorites yet. Tap the heart on any recipe to save it here."
-            ctaLabel="Explore recipes"
-            ctaTo="/"
-            ctaVariant="outline"
-          />
-        )}
+            {state === "populated" && failedCount > 0 && (
+              <p className="mt-4 text-sm text-error">
+                {failedCount} {failedCount === 1 ? "recipe" : "recipes"} couldn't be loaded.
+              </p>
+            )}
 
-        {state === "populated" && failedCount > 0 && (
-          <p className="mt-4 text-sm text-error">
-            {failedCount} {failedCount === 1 ? "recipe" : "recipes"} couldn't be loaded.
-          </p>
-        )}
-
-        {state === "populated" && (
-          <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-            {recipes.map((recipe) => (
-              <RecipeCard key={recipe.id} recipe={recipe} />
-            ))}
-          </div>
-        )}
+            {state === "populated" && (
+              <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+                {recipes.map((recipe) => (
+                  <RecipeCard key={recipe.id} recipe={recipe} />
+                ))}
+              </div>
+            )}
+          </>
+        </RequireAuth>
       </main>
     </div>
   )
