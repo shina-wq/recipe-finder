@@ -4,33 +4,11 @@ import { AddRecipeTile } from "@/components/recipes/AddRecipeTile"
 import { MyRecipeCard } from "@/components/recipes/MyRecipeCard"
 import { RequireAuth } from "@/components/auth/RequireAuth"
 import { useAuth } from "@/hooks/useAuth"
-import type { Recipe } from "@/types/recipe"
-
-// TODO: replace with a recipesStore (localStorage, per-user, mirroring favoritesStore)
-const MOCK_RECIPES: Recipe[] = [
-  {
-    id: 9001,
-    name: "Weeknight Garlic Butter Pasta",
-    ingredients: ["Spaghetti", "Butter", "Garlic", "Parmesan", "Parsley"],
-    instructions: ["Boil pasta.", "Melt butter with garlic.", "Toss and top with parmesan."],
-    prepTimeMinutes: 5,
-    cookTimeMinutes: 12,
-    servings: 2,
-    difficulty: "Easy",
-    cuisine: "Italian",
-    caloriesPerServing: 420,
-    tags: ["Pasta", "Quick"],
-    userId: 0,
-    image: "https://cdn.dummyjson.com/recipe-images/16.webp",
-    rating: 4.6,
-    reviewCount: 0,
-    mealType: ["Dinner"],
-  },
-]
+import { useRecipes } from "@/hooks/useRecipes"
 
 export function MyRecipesPage() {
   const { isAuthenticated } = useAuth()
-  const recipes = MOCK_RECIPES
+  const { recipes, deleteRecipe } = useRecipes()
 
   return (
     <div className="bg-background/95">
@@ -61,7 +39,7 @@ export function MyRecipesPage() {
             <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
               <AddRecipeTile />
               {recipes.map((recipe) => (
-                <MyRecipeCard key={recipe.id} recipe={recipe} onDelete={() => {}} />
+                <MyRecipeCard key={recipe.id} recipe={recipe} onDelete={deleteRecipe} />
               ))}
             </div>
           </>
