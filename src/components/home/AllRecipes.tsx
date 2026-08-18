@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react"
 import { getRecipes } from "@/api/recipes"
 import { recipeKeys } from "@/lib/queryKeys"
 import { RecipeCard } from "@/components/recipes/RecipeCard"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver"
 import type { RecipesResponse } from "@/types/recipe"
 
@@ -49,7 +50,7 @@ export function AllRecipes() {
       {isLoading && (
         <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-            <div key={i} className="aspect-4/3 animate-pulse rounded-2xl bg-border" />
+            <Skeleton key={i} className="aspect-4/3 rounded-2xl" />
           ))}
         </div>
       )}

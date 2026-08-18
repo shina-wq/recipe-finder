@@ -5,6 +5,7 @@ import { getRecipeById } from "@/api/recipes"
 import { recipeKeys } from "@/lib/queryKeys"
 import { useFavorites } from "@/hooks/useFavorites"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -33,11 +34,11 @@ export function RecipeDetailsPage() {
     return (
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="grid gap-8 md:grid-cols-2">
-          <div className="aspect-4/3 animate-pulse rounded-2xl bg-border" />
+          <Skeleton className="aspect-4/3 rounded-2xl" />
           <div className="space-y-3">
-            <div className="h-8 w-2/3 animate-pulse rounded bg-border" />
-            <div className="h-4 w-1/3 animate-pulse rounded bg-border" />
-            <div className="h-24 animate-pulse rounded bg-border" />
+            <Skeleton className="h-8 w-2/3" />
+            <Skeleton className="h-4 w-1/3" />
+            <Skeleton className="h-24" />
           </div>
         </div>
       </main>

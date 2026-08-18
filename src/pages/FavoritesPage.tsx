@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useQueries } from "@tanstack/react-query"
 import { Heart, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -94,7 +95,7 @@ export function FavoritesPage() {
             {state === "loading" && (
               <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
                 {Array.from({ length: Math.min(favoriteIds.length, SKELETON_COUNT) }).map((_, i) => (
-                  <div key={i} className="aspect-4/3 animate-pulse rounded-2xl bg-border" />
+                  <Skeleton key={i} className="aspect-4/3 rounded-2xl" />
                 ))}
               </div>
             )}

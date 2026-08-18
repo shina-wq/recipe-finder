@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
-import { Loader2 } from "lucide-react"
 import { searchRecipes } from "@/api/recipes"
 import { recipeKeys } from "@/lib/queryKeys"
 import { RecipeCard } from "@/components/recipes/RecipeCard"
+import { Skeleton } from "@/components/ui/skeleton"
+
+const SKELETON_COUNT = 8
 
 interface SearchResultsProps {
   query: string
@@ -19,8 +21,10 @@ export function SearchResults({ query }: SearchResultsProps) {
       <h2 className="font-display text-2xl font-bold text-foreground">Results for "{query}"</h2>
 
       {isLoading && (
-        <div className="mt-16 flex justify-center">
-          <Loader2 className="size-8 animate-spin text-primary" />
+        <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+            <Skeleton key={i} className="aspect-4/3 rounded-2xl" />
+          ))}
         </div>
       )}
 
