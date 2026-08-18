@@ -62,7 +62,7 @@
   --primary-foreground: var(--color-paper);
   --secondary: var(--color-herb);
   --secondary-foreground: var(--color-paper);
-  --muted: var(--color-muted);
+  --muted: #d8d8d8;
   --muted-foreground: var(--color-foreground-muted);
   --accent: var(--color-mustard);
   --accent-foreground: var(--color-ink);
