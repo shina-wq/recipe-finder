@@ -20,6 +20,13 @@ const NAV_LINKS = [
   { label: "My Recipes", to: "/my-recipes" },
 ] as const
 
+// Drives both the desktop dropdown and the mobile panel's account section,
+// so the two can't drift out of sync on label/icon/destination.
+const ACCOUNT_LINKS = [
+  { label: "My profile", icon: User, to: "/profile" },
+  { label: "Settings", icon: SettingsIcon, to: "/settings" },
+] as const
+
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { user, isAuthenticated, logout } = useAuth()
@@ -35,14 +42,16 @@ export function Navbar() {
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     cn(
-      "text-sm font-medium text-foreground-muted transition-colors hover:text-primary",
+      "text-sm font-medium text-foreground transition-colors hover:text-primary",
       isActive && "text-primary",
     )
 
   const initials = user ? `${user.firstName[0] ?? ""}${user.lastName[0] ?? ""}`.toUpperCase() : ""
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
+    // No bottom border - separation from page content comes from the
+    // translucent blur alone, same as Dribbble's flat, borderless header.
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2" onClick={closeMenu}>
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -88,16 +97,12 @@ export function Navbar() {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuGroup>
-                  {/* TODO(profile-page): no route yet */}
-                  <DropdownMenuItem>
-                    <User className="size-4" data-icon="inline-start" />
-                    My profile
-                  </DropdownMenuItem>
-                  {/* also has no route/onClick yet. */}
-                  <DropdownMenuItem>
-                    <SettingsIcon className="size-4" data-icon="inline-start" />
-                    Settings
-                  </DropdownMenuItem>
+                  {ACCOUNT_LINKS.map(({ label, icon: Icon, to }) => (
+                    <DropdownMenuItem key={label} onClick={() => navigate(to)}>
+                      <Icon className="size-4" data-icon="inline-start" />
+                      {label}
+                    </DropdownMenuItem>
+                  ))}
                 </DropdownMenuGroup>
 
                 <DropdownMenuSeparator />
@@ -112,7 +117,7 @@ export function Navbar() {
             <>
               <Link
                 to="/sign-in"
-                className="hidden text-sm font-medium text-foreground-muted hover:text-primary sm:block"
+                className="hidden text-sm font-medium text-foreground hover:text-primary sm:block"
               >
                 Sign in
               </Link>
@@ -150,8 +155,9 @@ export function Navbar() {
           />
 
           {/* Mobile menu panel - relative z-50 lifts it into its own stacking
-              context above the backdrop (it's otherwise a plain flow element). */}
-          <div className="relative z-50 animate-in fade-in slide-in-from-top-2 border-t border-border bg-background px-4 py-4 duration-150 sm:hidden">
+              context above the backdrop (it's otherwise a plain flow element).
+              shadow-card replaces the old border-t as the panel/page boundary. */}
+          <div className="relative z-50 animate-in fade-in slide-in-from-top-2 bg-background px-4 py-4 shadow-card duration-150 sm:hidden">
             <div className="flex flex-col gap-4">
               {NAV_LINKS.map((link) => (
                 <NavLink
@@ -165,7 +171,7 @@ export function Navbar() {
                 </NavLink>
               ))}
 
-              <div className="flex flex-col gap-3 border-t border-border pt-4">
+              <div className="flex flex-col gap-3 pt-4">
                 {isAuthenticated && user ? (
                   <>
                     <div className="flex items-center gap-3">
@@ -177,6 +183,24 @@ export function Navbar() {
                         {user.firstName} {user.lastName}
                       </span>
                     </div>
+
+                    {/* Same ACCOUNT_LINKS as the desktop dropdown - real routes now,
+                        so these render as ordinary links rather than the disabled
+                        placeholders they used to be. */}
+                    <div className="flex flex-col gap-1">
+                      {ACCOUNT_LINKS.map(({ label, icon: Icon, to }) => (
+                        <Link
+                          key={label}
+                          to={to}
+                          onClick={closeMenu}
+                          className="flex items-center gap-2 py-1 text-sm font-medium text-foreground transition-colors hover:text-primary"
+                        >
+                          <Icon className="size-4" />
+                          {label}
+                        </Link>
+                      ))}
+                    </div>
+
                     <Button variant="outline" size="sm" className="rounded-full" onClick={handleSignOut}>
                       <LogOut className="size-4" data-icon="inline-start" />
                       Sign out
@@ -187,7 +211,7 @@ export function Navbar() {
                     <Link
                       to="/sign-in"
                       onClick={closeMenu}
-                      className="text-sm font-medium text-foreground-muted hover:text-primary"
+                      className="text-sm font-medium text-foreground hover:text-primary"
                     >
                       Sign in
                     </Link>
