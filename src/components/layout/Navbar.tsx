@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link, NavLink, useNavigate } from "react-router-dom"
-import { UtensilsCrossed, X, MenuIcon, LogOut, SettingsIcon, ChefHat } from "lucide-react"
+import { UtensilsCrossed, X, MenuIcon, LogOut, SettingsIcon, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils"
 const NAV_LINKS = [
   { label: "Home", to: "/" },
   { label: "Favorites", to: "/favorites" },
+  { label: "My Recipes", to: "/my-recipes" },
 ] as const
 
 export function Navbar() {
@@ -87,10 +88,12 @@ export function Navbar() {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={() => navigate("/my-recipes")}>
-                    <ChefHat className="size-4" data-icon="inline-start" />
-                    My recipes
+                  {/* TODO(profile-page): no route yet */}
+                  <DropdownMenuItem>
+                    <User className="size-4" data-icon="inline-start" />
+                    My profile
                   </DropdownMenuItem>
+                  {/* also has no route/onClick yet. */}
                   <DropdownMenuItem>
                     <SettingsIcon className="size-4" data-icon="inline-start" />
                     Settings
@@ -136,60 +139,71 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile menu panel */}
       {isMenuOpen && (
-        <div className="animate-in fade-in slide-in-from-top-2 border-t border-border bg-background px-4 py-4 duration-150 sm:hidden">
-          <div className="flex flex-col gap-4">
-            {NAV_LINKS.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                end={link.to === "/"}
-                className={navLinkClass}
-                onClick={closeMenu}
-              >
-                {link.label}
-              </NavLink>
-            ))}
+        <>
+          {/* Backdrop - dims the page behind the panel, tap to dismiss.
+              Fixed + z-40 so it sits below the panel (z-50) but above page content. */}
+          <div
+            className="fixed inset-0 top-16 z-40 bg-black/30 animate-in fade-in duration-150 sm:hidden"
+            aria-hidden="true"
+            onClick={closeMenu}
+          />
 
-            <div className="flex flex-col gap-3 border-t border-border pt-4">
-              {isAuthenticated && user ? (
-                <>
-                  <div className="flex items-center gap-3">
-                    <Avatar className="size-9">
-                      <AvatarImage src={user.image} alt={user.username} />
-                      <AvatarFallback>{initials}</AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm font-medium text-foreground">
-                      {user.firstName} {user.lastName}
-                    </span>
-                  </div>
-                  <Button variant="outline" size="sm" className="rounded-full" onClick={handleSignOut}>
-                    <LogOut className="size-4" data-icon="inline-start" />
-                    Sign out
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/sign-in"
-                    onClick={closeMenu}
-                    className="text-sm font-medium text-foreground-muted hover:text-primary"
-                  >
-                    Sign in
-                  </Link>
-                  <Button
-                    render={<Link to="/sign-up" onClick={closeMenu} />}
-                    size="sm"
-                    className="rounded-full"
-                  >
-                    Get Started
-                  </Button>
-                </>
-              )}
+          {/* Mobile menu panel - relative z-50 lifts it into its own stacking
+              context above the backdrop (it's otherwise a plain flow element). */}
+          <div className="relative z-50 animate-in fade-in slide-in-from-top-2 border-t border-border bg-background px-4 py-4 duration-150 sm:hidden">
+            <div className="flex flex-col gap-4">
+              {NAV_LINKS.map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  end={link.to === "/"}
+                  className={navLinkClass}
+                  onClick={closeMenu}
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+
+              <div className="flex flex-col gap-3 border-t border-border pt-4">
+                {isAuthenticated && user ? (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="size-9">
+                        <AvatarImage src={user.image} alt={user.username} />
+                        <AvatarFallback>{initials}</AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm font-medium text-foreground">
+                        {user.firstName} {user.lastName}
+                      </span>
+                    </div>
+                    <Button variant="outline" size="sm" className="rounded-full" onClick={handleSignOut}>
+                      <LogOut className="size-4" data-icon="inline-start" />
+                      Sign out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/sign-in"
+                      onClick={closeMenu}
+                      className="text-sm font-medium text-foreground-muted hover:text-primary"
+                    >
+                      Sign in
+                    </Link>
+                    <Button
+                      render={<Link to="/sign-up" onClick={closeMenu} />}
+                      size="sm"
+                      className="rounded-full"
+                    >
+                      Get Started
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </header>
   )
