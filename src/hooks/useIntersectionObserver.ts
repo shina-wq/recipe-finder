@@ -6,7 +6,7 @@ interface UseIntersectionObserverOptions {
 }
 
 export function useIntersectionObserver<T extends Element>({
-  rootMargin = "400px",
+  rootMargin = "100px",
   enabled = true,
 }: UseIntersectionObserverOptions = {}) {
   const targetRef = useRef<T>(null)
