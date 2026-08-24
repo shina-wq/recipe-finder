@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { MEAL_TYPES } from "@/lib/mealTypes"
 import { cn } from "@/lib/utils"
 
-export const FORM_INPUT_CLASS = "bg-white"
+export const FORM_INPUT_CLASS = "bg-white border border-ink/10"
 
 // Meal type toggle
 interface MealTypeToggleProps {

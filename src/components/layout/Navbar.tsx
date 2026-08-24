@@ -49,9 +49,7 @@ export function Navbar() {
   const initials = user ? `${user.firstName[0] ?? ""}${user.lastName[0] ?? ""}`.toUpperCase() : ""
 
   return (
-    // No bottom border - separation from page content comes from the
-    // translucent blur alone, same as Dribbble's flat, borderless header.
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b border-ink/8 bg-background/95 backdrop-blur-sm">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2" onClick={closeMenu}>
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
