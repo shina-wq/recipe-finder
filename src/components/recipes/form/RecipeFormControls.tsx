@@ -73,7 +73,7 @@ export function TagInput({ value, onChange, placeholder }: TagInputProps) {
     <div
       className={cn(
         FORM_INPUT_CLASS,
-        "flex min-h-11 flex-wrap items-center gap-1.5 rounded-lg border border-input px-2.5 py-1.5",
+        "flex min-h-11 flex-wrap items-center gap-1.5 rounded-lg px-2.5 py-1.5",
       )}
     >
       {value.map((tag) => (

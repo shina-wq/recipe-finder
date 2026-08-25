@@ -1,14 +1,14 @@
 import { Controller, type Control, type FieldErrors, type UseFormRegister, type UseFormWatch } from "react-hook-form"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import type { RecipeFormInput, RecipeFormValues } from "@/lib/schemas/recipe"
+import type { RecipeFormInput } from "@/lib/schemas/recipe"
 import { FORM_INPUT_CLASS, MealTypeToggle, TagInput } from "./RecipeFormControls"
 
 interface ClassificationStepProps {
   register: UseFormRegister<RecipeFormInput>
   control: Control<RecipeFormInput>
   watch: UseFormWatch<RecipeFormInput>
-  errors: FieldErrors<RecipeFormValues>
+  errors: FieldErrors<RecipeFormInput>
 }
 
 export function ClassificationStep({ register, control, watch, errors }: ClassificationStepProps) {

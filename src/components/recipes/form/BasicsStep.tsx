@@ -1,14 +1,14 @@
 import { Controller, type Control, type FieldErrors, type UseFormRegister } from "react-hook-form"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { DIFFICULTIES, type RecipeFormInput, type RecipeFormValues } from "@/lib/schemas/recipe"
+import { DIFFICULTIES, type RecipeFormInput } from "@/lib/schemas/recipe"
 import { FORM_INPUT_CLASS } from "./RecipeFormControls"
 import { cn } from "@/lib/utils"
 
 interface BasicsStepProps {
   register: UseFormRegister<RecipeFormInput>
   control: Control<RecipeFormInput>
-  errors: FieldErrors<RecipeFormValues>
+  errors: FieldErrors<RecipeFormInput>
 }
 
 export function BasicsStep({ register, control, errors }: BasicsStepProps) {

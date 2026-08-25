@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowLeft, ArrowRight, ChefHat, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { RequireAuth } from "@/components/auth/RequireAuth"
 import { useAuth } from "@/hooks/useAuth"
 import { useRecipes } from "@/hooks/useRecipes"
@@ -154,47 +155,49 @@ export function RecipeFormPage() {
               {isEditMode ? "Edit Recipe" : "New Recipe"}
             </h1>
 
-            <div className="mt-6">
-              <RecipeStepper
-                steps={RECIPE_FORM_STEPS}
-                currentStep={currentStep}
-                onStepClick={jumpToStep}
-                isStepClickable={isStepClickable}
-              />
-            </div>
-
-            <section className="mt-8">
-              {currentStep === 0 && <BasicsStep register={register} control={control} errors={errors} />}
-
-              {currentStep === 1 && (
-                <ClassificationStep register={register} control={control} watch={watch} errors={errors} />
-              )}
-
-              {currentStep === 2 && (
-                <DynamicListField
-                  control={control}
-                  register={register}
-                  name="ingredients"
-                  label="Ingredients"
-                  placeholder="2 cups flour"
-                  errorMessage={errors.ingredients?.message}
+            <Card className="mt-6 shadow-card">
+              <CardHeader className="border-b border-ink/8">
+                <RecipeStepper
+                  steps={RECIPE_FORM_STEPS}
+                  currentStep={currentStep}
+                  onStepClick={jumpToStep}
+                  isStepClickable={isStepClickable}
                 />
-              )}
+              </CardHeader>
 
-              {currentStep === 3 && (
-                <DynamicListField
-                  control={control}
-                  register={register}
-                  name="instructions"
-                  label="Instructions"
-                  placeholder="Preheat oven to 350°F..."
-                  numbered
-                  errorMessage={errors.instructions?.message}
-                />
-              )}
-            </section>
+              <CardContent>
+                {currentStep === 0 && <BasicsStep register={register} control={control} errors={errors} />}
 
-            <div className="mt-10 -mx-4 flex items-center justify-between gap-2 bg-background/95 px-4 py-4 backdrop-blur-sm sm:-mx-6 sm:px-6">
+                {currentStep === 1 && (
+                  <ClassificationStep register={register} control={control} watch={watch} errors={errors} />
+                )}
+
+                {currentStep === 2 && (
+                  <DynamicListField
+                    control={control}
+                    register={register}
+                    name="ingredients"
+                    label="Ingredients"
+                    placeholder="2 cups flour"
+                    errorMessage={errors.ingredients?.message}
+                  />
+                )}
+
+                {currentStep === 3 && (
+                  <DynamicListField
+                    control={control}
+                    register={register}
+                    name="instructions"
+                    label="Instructions"
+                    placeholder="Preheat oven to 350°F..."
+                    numbered
+                    errorMessage={errors.instructions?.message}
+                  />
+                )}
+              </CardContent>
+            </Card>
+
+            <div className="mt-6 -mx-4 flex items-center justify-between gap-2 bg-background/95 px-4 py-4 backdrop-blur-sm sm:-mx-6 sm:px-6">
               <div>
                 {currentStep > 0 && (
                   <Button type="button" variant="outline" size="sm" className="rounded-full" onClick={goBack}>

@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@locator/runtime": "^0.5.1",
     "@tanstack/react-query-devtools": "^5.101.4",
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",
@@ -49,6 +50,7 @@
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12",
+    "vite-plugin-react-click-to-component": "^4.2.3",
     "vitest": "^4.1.10"
   }
 }
