@@ -32,7 +32,7 @@ export function MyRecipesPage() {
             <div className="mt-6 flex gap-3 rounded-2xl bg-accent/10 p-4 ring-1 ring-accent/20">
               <KeyRound className="mt-0.5 size-4 shrink-0 text-accent" />
               <p className="text-sm text-foreground-muted">
-                Saved to this browser only - recipes here won't sync to DummyJSON's server or other devices.
+                Saves and edits call DummyJSON's live API, but their demo write endpoints don't persist data - so this browser's storage is what actually keeps your recipes. Nothing here syncs to DummyJSON's server or other devices.
               </p>
             </div>
 

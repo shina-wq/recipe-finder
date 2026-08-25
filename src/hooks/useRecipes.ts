@@ -1,6 +1,15 @@
 import { useCallback, useSyncExternalStore } from "react"
 import { recipesStore, type RecipeInput } from "@/lib/recipesStore"
 import { useAuth } from "@/hooks/useAuth"
+import {
+  createRecipe as apiCreateRecipe,
+  updateRecipe as apiUpdateRecipe,
+  deleteRecipe as apiDeleteRecipe,
+} from "@/api/recipes"
+
+function fireAndForget(promise: Promise<unknown>, action: string) {
+  promise.catch((err) => console.warn(`[recipes] ${action} call failed (expected with mock API):`, err))
+}
 
 export function useRecipes() {
   const { user } = useAuth()
@@ -17,20 +26,28 @@ export function useRecipes() {
   )
 
   const addRecipe = useCallback(
-    (input: RecipeInput) => (userId === null ? undefined : recipesStore.add(userId, input)),
+    (input: RecipeInput) => {
+      if (userId === null) return undefined
+      fireAndForget(apiCreateRecipe(input), "create")
+      return recipesStore.add(userId, input)
+    },
     [userId],
   )
 
   const updateRecipe = useCallback(
     (id: number, input: RecipeInput) => {
-      if (userId !== null) recipesStore.update(userId, id, input)
+      if (userId === null) return
+      fireAndForget(apiUpdateRecipe(id, input), "update")
+      recipesStore.update(userId, id, input)
     },
     [userId],
   )
 
   const deleteRecipe = useCallback(
     (id: number) => {
-      if (userId !== null) recipesStore.remove(userId, id)
+      if (userId === null) return
+      fireAndForget(apiDeleteRecipe(id), "delete")
+      recipesStore.remove(userId, id)
     },
     [userId],
   )
