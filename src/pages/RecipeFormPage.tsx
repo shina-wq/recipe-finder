@@ -1,19 +1,20 @@
+import { useState, type KeyboardEvent } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { useForm, Controller } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ChefHat, Loader2 } from "lucide-react"
+import { ArrowLeft, ArrowRight, ChefHat, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
 import { RequireAuth } from "@/components/auth/RequireAuth"
 import { useAuth } from "@/hooks/useAuth"
 import { useRecipes } from "@/hooks/useRecipes"
 import type { RecipeInput } from "@/lib/recipesStore"
 import type { Recipe } from "@/types/recipe"
 import { DynamicListField } from "@/components/recipes/form/DynamicListField"
-import { MealTypeToggle, TagInput, FORM_INPUT_CLASS } from "@/components/recipes/form/RecipeFormControls"
-import { recipeFormSchema, DIFFICULTIES, type RecipeFormInput, type RecipeFormValues } from "@/lib/schemas/recipe"
-import { cn } from "@/lib/utils"
+import { BasicsStep } from "@/components/recipes/form/BasicsStep"
+import { ClassificationStep } from "@/components/recipes/form/ClassificationStep"
+import { RecipeStepper } from "@/components/recipes/form/RecipeStepper"
+import { RECIPE_FORM_STEPS } from "@/lib/schemas/recipeFormSteps"
+import { recipeFormSchema, type RecipeFormInput, type RecipeFormValues } from "@/lib/schemas/recipe"
 
 const DEFAULT_VALUES: RecipeFormValues = {
   name: "",
@@ -58,18 +59,20 @@ export function RecipeFormPage() {
   const { getRecipeById, addRecipe, updateRecipe } = useRecipes()
   const existingRecipe = isEditMode ? getRecipeById(recipeId) : undefined
 
+  const [currentStep, setCurrentStep] = useState(0)
+  const isLastStep = currentStep === RECIPE_FORM_STEPS.length - 1
+
   const {
     register,
     control,
     handleSubmit,
     watch,
+    trigger,
     formState: { errors, isSubmitting },
   } = useForm<RecipeFormInput, unknown, RecipeFormValues>({
     resolver: zodResolver(recipeFormSchema),
     defaultValues: toFormValues(existingRecipe),
   })
-
-  const imageUrl = watch("image")
 
   if (isEditMode && isAuthenticated && !existingRecipe) {
     return (
@@ -82,6 +85,36 @@ export function RecipeFormPage() {
         </main>
       </div>
     )
+  }
+
+  const goNext = async () => {
+    // Create mode: gate advancement on the current step's own fields validating.
+    // Edit mode: data already exists and is presumed valid, so skip the gate.
+    if (!isEditMode) {
+      const valid = await trigger(RECIPE_FORM_STEPS[currentStep]!.fields)
+      if (!valid) return
+    }
+    setCurrentStep((step) => Math.min(step + 1, RECIPE_FORM_STEPS.length - 1))
+  }
+
+  const goBack = () => setCurrentStep((step) => Math.max(step - 1, 0))
+
+  // Create mode: only steps already passed are safe to jump back to.
+  // Edit mode: every step holds valid data, so jump anywhere.
+  const isStepClickable = (index: number) => isEditMode || index < currentStep
+
+  const jumpToStep = (index: number) => {
+    if (isStepClickable(index)) setCurrentStep(index)
+  }
+
+  // Enter shouldn't submit the whole form from a mid-flow step - advance instead.
+  // Bail if something upstream (e.g. the tag input's own Enter handler) already
+  // handled the key, or if we're on the last step where submitting is correct.
+  const handleFormKeyDown = (e: KeyboardEvent<HTMLFormElement>) => {
+    if (e.key !== "Enter" || e.defaultPrevented || isLastStep) return
+    if ((e.target as HTMLElement).tagName === "TEXTAREA") return
+    e.preventDefault()
+    goNext()
   }
 
   const onSubmit = (values: RecipeFormValues) => {
@@ -116,175 +149,28 @@ export function RecipeFormPage() {
           icon={<ChefHat className="size-10 text-muted-foreground" />}
           message="Sign in to create and manage your own recipes."
         >
-          <form onSubmit={handleSubmit(onSubmit)} noValidate aria-busy={isSubmitting}>
-            <div className="flex items-center justify-between">
-              <h1 className="font-display text-2xl font-bold text-foreground">
-                {isEditMode ? "Edit Recipe" : "New Recipe"}
-              </h1>
+          <form onSubmit={handleSubmit(onSubmit)} onKeyDown={handleFormKeyDown} noValidate aria-busy={isSubmitting}>
+            <h1 className="font-display text-2xl font-bold text-foreground">
+              {isEditMode ? "Edit Recipe" : "New Recipe"}
+            </h1>
+
+            <div className="mt-6">
+              <RecipeStepper
+                steps={RECIPE_FORM_STEPS}
+                currentStep={currentStep}
+                onStepClick={jumpToStep}
+                isStepClickable={isStepClickable}
+              />
             </div>
 
-            {/* Basic Info */}
             <section className="mt-8">
-              <h2 className="font-display text-lg font-semibold text-foreground">Basic Info</h2>
+              {currentStep === 0 && <BasicsStep register={register} control={control} errors={errors} />}
 
-              <FieldGroup className="mt-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field data-invalid={!!errors.name}>
-                    <FieldLabel htmlFor="name">Recipe name</FieldLabel>
-                    <Input
-                      id="name"
-                      placeholder="Weeknight Garlic Butter Pasta"
-                      className={FORM_INPUT_CLASS}
-                      {...register("name")}
-                    />
-                    <FieldError errors={errors.name ? [errors.name] : undefined} />
-                  </Field>
-
-                  <Field data-invalid={!!errors.cuisine}>
-                    <FieldLabel htmlFor="cuisine">Cuisine</FieldLabel>
-                    <Input
-                      id="cuisine"
-                      placeholder="Italian"
-                      className={FORM_INPUT_CLASS}
-                      {...register("cuisine")}
-                    />
-                    <FieldError errors={errors.cuisine ? [errors.cuisine] : undefined} />
-                  </Field>
-                </div>
-
-                <Field data-invalid={!!errors.difficulty}>
-                  <FieldLabel>Difficulty</FieldLabel>
-                  <Controller
-                    control={control}
-                    name="difficulty"
-                    render={({ field }) => (
-                      <div className="flex gap-2">
-                        {DIFFICULTIES.map((level) => (
-                          <button
-                            key={level}
-                            type="button"
-                            onClick={() => field.onChange(level)}
-                            aria-pressed={field.value === level}
-                            className={cn(
-                              "cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-colors",
-                              field.value === level
-                                ? "border-primary bg-primary text-primary-foreground"
-                                : "border-border bg-white text-foreground-muted hover:border-primary hover:text-primary",
-                            )}
-                          >
-                            {level}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  />
-                  <FieldError errors={errors.difficulty ? [errors.difficulty] : undefined} />
-                </Field>
-
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <Field data-invalid={!!errors.servings}>
-                    <FieldLabel htmlFor="servings">Servings</FieldLabel>
-                    <Input
-                      id="servings"
-                      type="number"
-                      min={1}
-                      className={FORM_INPUT_CLASS}
-                      {...register("servings")}
-                    />
-                    <FieldError errors={errors.servings ? [errors.servings] : undefined} />
-                  </Field>
-
-                  <Field data-invalid={!!errors.prepTimeMinutes}>
-                    <FieldLabel htmlFor="prepTime">Prep time (min)</FieldLabel>
-                    <Input
-                      id="prepTime"
-                      type="number"
-                      min={0}
-                      className={FORM_INPUT_CLASS}
-                      {...register("prepTimeMinutes")}
-                    />
-                    <FieldError errors={errors.prepTimeMinutes ? [errors.prepTimeMinutes] : undefined} />
-                  </Field>
-
-                  <Field data-invalid={!!errors.cookTimeMinutes}>
-                    <FieldLabel htmlFor="cookTime">Cook time (min)</FieldLabel>
-                    <Input
-                      id="cookTime"
-                      type="number"
-                      min={0}
-                      className={FORM_INPUT_CLASS}
-                      {...register("cookTimeMinutes")}
-                    />
-                    <FieldError errors={errors.cookTimeMinutes ? [errors.cookTimeMinutes] : undefined} />
-                  </Field>
-                </div>
-
-                <Field data-invalid={!!errors.caloriesPerServing}>
-                  <FieldLabel htmlFor="calories">Calories per serving</FieldLabel>
-                  <Input
-                    id="calories"
-                    type="number"
-                    min={0}
-                    className={FORM_INPUT_CLASS}
-                    {...register("caloriesPerServing")}
-                  />
-                  <FieldError errors={errors.caloriesPerServing ? [errors.caloriesPerServing] : undefined} />
-                </Field>
-              </FieldGroup>
-            </section>
-
-            {/* Meal Types */}
-            <section className="mt-8">
-              <h2 className="font-display text-lg font-semibold text-foreground">Meal Types</h2>
-              <Field data-invalid={!!errors.mealType} className="mt-4">
-                <Controller
-                  control={control}
-                  name="mealType"
-                  render={({ field }) => <MealTypeToggle value={field.value} onChange={field.onChange} />}
-                />
-                <FieldError errors={errors.mealType ? [errors.mealType] : undefined} />
-              </Field>
-            </section>
-
-            {/* Tags */}
-            <section className="mt-8">
-              <h2 className="font-display text-lg font-semibold text-foreground">Tags</h2>
-              <Field className="mt-4">
-                <Controller
-                  control={control}
-                  name="tags"
-                  render={({ field }) => (
-                    <TagInput value={field.value ?? []} onChange={field.onChange} placeholder="Add a tag and press Enter..." />
-                  )}
-                />
-              </Field>
-            </section>
-
-            {/* Image */}
-            <section className="mt-8">
-              <h2 className="font-display text-lg font-semibold text-foreground">Image</h2>
-              <Field data-invalid={!!errors.image} className="mt-4">
-                <FieldLabel htmlFor="image">Image URL</FieldLabel>
-                <Input
-                  id="image"
-                  placeholder="https://..."
-                  className={FORM_INPUT_CLASS}
-                  {...register("image")}
-                />
-                <FieldError errors={errors.image ? [errors.image] : undefined} />
-              </Field>
-
-              {imageUrl && (
-                <div className="mt-3 aspect-4/3 w-48 overflow-hidden rounded-xl ring-1 ring-border">
-                  <img src={imageUrl} alt="Recipe preview" className="size-full object-cover" />
-                </div>
+              {currentStep === 1 && (
+                <ClassificationStep register={register} control={control} watch={watch} errors={errors} />
               )}
-            </section>
 
-            {/* Ingredients */}
-            <section className="mt-8">
-              <h2 className="font-display text-lg font-semibold text-foreground">Ingredients</h2>
-              <div className="mt-4">
+              {currentStep === 2 && (
                 <DynamicListField
                   control={control}
                   register={register}
@@ -293,13 +179,9 @@ export function RecipeFormPage() {
                   placeholder="2 cups flour"
                   errorMessage={errors.ingredients?.message}
                 />
-              </div>
-            </section>
+              )}
 
-            {/* Instructions */}
-            <section className="mt-8">
-              <h2 className="font-display text-lg font-semibold text-foreground">Instructions</h2>
-              <div className="mt-4">
+              {currentStep === 3 && (
                 <DynamicListField
                   control={control}
                   register={register}
@@ -309,18 +191,36 @@ export function RecipeFormPage() {
                   numbered
                   errorMessage={errors.instructions?.message}
                 />
-              </div>
+              )}
             </section>
 
-            {/* Actions */}
-            <div className="mt-10 -mx-4 flex justify-end gap-2 bg-background/95 px-4 py-4 backdrop-blur-sm sm:-mx-6 sm:px-6">
-              <Button variant="outline" size="sm" className="rounded-full" render={<Link to="/my-recipes" />}>
-                Cancel
-              </Button>
-              <Button type="submit" size="sm" className="rounded-full" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="size-3.5 animate-spin" />}
-                Save
-              </Button>
+            <div className="mt-10 -mx-4 flex items-center justify-between gap-2 bg-background/95 px-4 py-4 backdrop-blur-sm sm:-mx-6 sm:px-6">
+              <div>
+                {currentStep > 0 && (
+                  <Button type="button" variant="outline" size="sm" className="rounded-full" onClick={goBack}>
+                    <ArrowLeft className="size-3.5" data-icon="inline-start" />
+                    Back
+                  </Button>
+                )}
+              </div>
+
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="rounded-full" render={<Link to="/my-recipes" />}>
+                  Cancel
+                </Button>
+
+                {isLastStep || isEditMode ? (
+                  <Button type="submit" size="sm" className="rounded-full" disabled={isSubmitting}>
+                    {isSubmitting && <Loader2 className="size-3.5 animate-spin" />}
+                    Save
+                  </Button>
+                ) : (
+                  <Button type="button" size="sm" className="rounded-full" onClick={goNext}>
+                    Next
+                    <ArrowRight className="size-3.5" data-icon="inline-end" />
+                  </Button>
+                )}
+              </div>
             </div>
           </form>
         </RequireAuth>
