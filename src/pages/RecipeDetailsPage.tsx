@@ -67,6 +67,8 @@ export function RecipeDetailsPage() {
         title={`${recipe.name} Recipe`}
         description={`${recipe.name} — a ${recipe.cuisine} recipe with ${recipe.ingredients.length} ingredients, ready in ${totalTime} min.`}
         path={`/recipes/${recipe.id}`}
+        image={recipe.image}
+        ogType="article"
         />
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
