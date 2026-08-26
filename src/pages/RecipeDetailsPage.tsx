@@ -17,6 +17,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { RelatedRecipes } from "@/components/recipes/RelatedRecipes"
 import { cn } from "@/lib/utils"
+import { Seo } from "@/components/shared/Seo"
 
 export function RecipeDetailsPage() {
   const { id } = useParams()
@@ -62,6 +63,12 @@ export function RecipeDetailsPage() {
 
   return (
     <div className="bg-background/95">
+      <Seo
+        title={`${recipe.name} Recipe`}
+        description={`${recipe.name} — a ${recipe.cuisine} recipe with ${recipe.ingredients.length} ingredients, ready in ${totalTime} min.`}
+        path={`/recipes/${recipe.id}`}
+        />
+
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <Breadcrumb>
           <BreadcrumbList>

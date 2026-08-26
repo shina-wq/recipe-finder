@@ -21,6 +21,7 @@ import { getRecipeById } from "@/api/recipes"
 import { recipeKeys } from "@/lib/queryKeys"
 import { CenteredMessage } from "@/components/shared/CenteredMessage"
 import { RequireAuth } from "@/components/auth/RequireAuth"
+import { Seo } from "@/components/shared/Seo"
 
 const SKELETON_COUNT = 8
 
@@ -53,6 +54,7 @@ export function FavoritesPage() {
 
   return (
     <div className="bg-background/95">
+      <Seo title="My Favorites" path="/favorites" noindex />
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-baseline gap-3">

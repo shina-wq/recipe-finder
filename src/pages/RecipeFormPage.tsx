@@ -16,6 +16,7 @@ import { ClassificationStep } from "@/components/recipes/form/ClassificationStep
 import { RecipeStepper } from "@/components/recipes/form/RecipeStepper"
 import { RECIPE_FORM_STEPS } from "@/lib/schemas/recipeFormSteps"
 import { recipeFormSchema, type RecipeFormInput, type RecipeFormValues } from "@/lib/schemas/recipe"
+import { Seo } from "@/components/shared/Seo"
 
 const DEFAULT_VALUES: RecipeFormValues = {
   name: "",
@@ -78,6 +79,11 @@ export function RecipeFormPage() {
   if (isEditMode && isAuthenticated && !existingRecipe) {
     return (
       <div className="bg-background/95">
+        <Seo
+          title={isEditMode ? "Edit Recipe" : "New Recipe"}
+          path={isEditMode ? `/my-recipes/${id}/edit` : "/my-recipes/new"}
+          noindex
+        />
         <main className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
           <p className="text-foreground-muted">Couldn't find that recipe.</p>
           <Link to="/my-recipes" className="mt-2 inline-block text-primary hover:underline">
@@ -145,6 +151,11 @@ export function RecipeFormPage() {
 
   return (
     <div className="bg-background/95">
+      <Seo
+        title={isEditMode ? "Edit Recipe" : "New Recipe"}
+        path={isEditMode ? `/my-recipes/${id}/edit` : "/my-recipes/new"}
+        noindex
+      />
       <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
         <RequireAuth
           icon={<ChefHat className="size-10 text-muted-foreground" />}

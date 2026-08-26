@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /favorites
+Disallow: /my-recipes
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /*?q=*
+
+Sitemap: https://recipe-finder-gqeo.vercel.app/sitemap.xml

@@ -1,9 +1,11 @@
 import { Compass } from "lucide-react"
 import { CenteredMessage } from "@/components/shared/CenteredMessage"
+import { Seo } from "@/components/shared/Seo"
 
 export function NotFoundPage() {
   return (
     <div className="bg-background/95">
+      <Seo title="Page Not Found" path={location.pathname} noindex />
       <main className="mx-auto flex max-w-6xl flex-col items-center px-4 py-16 text-center sm:px-6">
         <span className="font-display text-7xl font-bold text-primary/50">404</span>
         <CenteredMessage
