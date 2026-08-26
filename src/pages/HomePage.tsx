@@ -15,7 +15,7 @@ export function HomePage() {
         <Seo title={`Search results for "${query}"`} path="/" noindex/>
       ) : (
         <Seo
-          title="Discover, Sve & Create Recipes"
+          title="Forkful"
           description="Browse thousands of recipes by cuisine and meal type, save your favorites, and publish your own on Forkful."
           path="/"
         />
