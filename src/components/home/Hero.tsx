@@ -42,10 +42,10 @@ export function Hero() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search for recipes (e.g., 'Pasta', 'Chicken')..."
-            className="h-11 rounded-full bg-white pl-9 border border-ink/10"
+            className="h-11 rounded-full bg-white pl-9 border border-ink/10 shadow-card"
           />
         </div>
-        <Button type="submit" size="lg" className="h-11 rounded-full px-8">
+        <Button type="submit" size="lg" className="h-11 rounded-full px-8 shadow-card">
           Search
         </Button>
       </form>
