@@ -63,7 +63,7 @@ export function RecipeCardBase({ recipe, href, overlay, footer }: RecipeCardBase
         </div>
       </div>
 
-      {footer && <CardFooter className="relative z-20 justify-end gap-1">{footer}</CardFooter>}
+      {footer && <CardFooter className="relative z-20 justify-end gap-1 border-t-ink/10 py-2">{footer}</CardFooter>}
     </Card>
   )
 }

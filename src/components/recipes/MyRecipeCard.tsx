@@ -27,7 +27,7 @@ export function MyRecipeCard({ recipe, onDelete }: MyRecipeCardProps) {
   return (
     <RecipeCardBase
       recipe={recipe}
-      href={`/my-recipes/${recipe.id}/edit`}
+      href={`/recipes/${recipe.id}`}
       footer={
         <>
           <Button
@@ -41,7 +41,7 @@ export function MyRecipeCard({ recipe, onDelete }: MyRecipeCardProps) {
 
           <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
             <AlertDialogTrigger
-              render={<Button variant="ghost" size="icon-sm" aria-label={`Delete ${recipe.name}`} />}
+              render={<Button variant="ghost" size="icon-sm" aria-label={`Delete ${recipe.name}`} className="hover:bg-destructive/10 hover:text-destructive" />}
             >
               <Trash2 className="size-4" />
             </AlertDialogTrigger>
@@ -53,7 +53,7 @@ export function MyRecipeCard({ recipe, onDelete }: MyRecipeCardProps) {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel className="border-ink/10">Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   variant="destructive"
                   onClick={() => {

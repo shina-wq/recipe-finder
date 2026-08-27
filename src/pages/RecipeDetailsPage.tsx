@@ -4,6 +4,7 @@ import { Clock, Heart, Star, Users } from "lucide-react"
 import { getRecipeById } from "@/api/recipes"
 import { recipeKeys } from "@/lib/queryKeys"
 import { useFavorites } from "@/hooks/useFavorites"
+import { useRecipes } from "@/hooks/useRecipes"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -17,17 +18,27 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { RelatedRecipes } from "@/components/recipes/RelatedRecipes"
 import { cn } from "@/lib/utils"
-import { Seo } from "@/components/shared/Seo"
 
 export function RecipeDetailsPage() {
   const { id } = useParams()
   const recipeId = Number(id)
 
-  const { data: recipe, isLoading, isError } = useQuery({
+  // User-created recipes live in recipesStore (localStorage), not DummyJSON -
+  // check there first, synchronously, before ever hitting the network.
+  const { getRecipeById: getLocalRecipe } = useRecipes()
+  const localRecipe = !Number.isNaN(recipeId) ? getLocalRecipe(recipeId) : undefined
+
+  const {
+    data: apiRecipe,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: recipeKeys.detail(recipeId),
     queryFn: () => getRecipeById(recipeId),
-    enabled: !Number.isNaN(recipeId),
+    enabled: !Number.isNaN(recipeId) && !localRecipe, // skip the fetch entirely for local recipes
   })
+
+  const recipe = localRecipe ?? apiRecipe
 
   const { isFavorite, toggleFavorite, canFavorite } = useFavorites()
 
@@ -46,7 +57,7 @@ export function RecipeDetailsPage() {
     )
   }
 
-  if (isError || !recipe) {
+  if ((isError || !recipe) && !localRecipe) {
     return (
       <main className="mx-auto max-w-6xl px-4 py-16 text-center sm:px-6">
         <p className="text-foreground-muted">Couldn't find that recipe.</p>
@@ -57,20 +68,14 @@ export function RecipeDetailsPage() {
     )
   }
 
+  if (!recipe) return null // unreachable given the guard above, satisfies TS narrowing
+
   const totalTime = recipe.prepTimeMinutes + recipe.cookTimeMinutes
   const favorited = isFavorite(recipe.id)
   const primaryMealType = recipe.mealType[0]
 
   return (
     <div className="bg-background/95">
-      <Seo
-        title={`${recipe.name} Recipe`}
-        description={`${recipe.name} — a ${recipe.cuisine} recipe with ${recipe.ingredients.length} ingredients, ready in ${totalTime} min.`}
-        path={`/recipes/${recipe.id}`}
-        image={recipe.image}
-        ogType="article"
-        />
-
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <Breadcrumb>
           <BreadcrumbList>
