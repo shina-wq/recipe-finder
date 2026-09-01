@@ -1,10 +1,29 @@
-import { motion, useReducedMotion } from "framer-motion"
-import heroPizza from "@/assets/images/hero-pizza.avif"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import { useEffect, useState } from "react"
+import heroImage1 from "@/assets/images/hero-pizza.avif"
+import heroImage2 from "@/assets/images/hero-burger.avif"
+import heroImage3 from "@/assets/images/hero-salad.avif"
+import heroImage4 from "@/assets/images/hero-eggs.avif"
+import heroImage5 from "@/assets/images/hero-cake.avif"
+
+const HERO_IMAGES = [heroImage1, heroImage2, heroImage3, heroImage4, heroImage5]
+const ROTATION_INTERVAL_MS = 5000
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const
 
 export function HeroIllustration() {
   const prefersReducedMotion = useReducedMotion()
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  // Cycle images on a timer. Skip entirely under reduced-motion
+  useEffect(() => {
+    if (prefersReducedMotion) return
+    const interval = setInterval(
+      () => setActiveIndex((i) => (i + 1) % HERO_IMAGES.length),
+      ROTATION_INTERVAL_MS,
+    )
+    return () => clearInterval(interval)
+  }, [prefersReducedMotion])
 
   return (
     <div
@@ -63,7 +82,7 @@ export function HeroIllustration() {
         className="absolute inset-[3%] rounded-[45%] border border-primary/30"
       />
 
-      {/* Main image frame */}
+      {/* Main image frame - crossfades between HERO_IMAGES on a timer */}
       <motion.div
         initial={
           prefersReducedMotion
@@ -88,26 +107,18 @@ export function HeroIllustration() {
         }}
         className="absolute inset-[8%] overflow-hidden rounded-[2.5rem] border-4 border-white shadow-xl"
       >
-        {/* Slow cinematic image movement */}
-        <motion.img
-          src={heroPizza}
-          alt=""
-          animate={
-            prefersReducedMotion
-              ? undefined
-              : {
-                  scale: [1, 1.06, 1],
-                  x: [0, -8, 0],
-                  y: [0, -5, 0],
-                }
-          }
-          transition={{
-            duration: 14,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="h-full w-full object-cover"
-        />
+        <AnimatePresence mode="sync">
+          <motion.img
+            key={activeIndex}
+            src={HERO_IMAGES[activeIndex]}
+            alt=""
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.9, ease: "easeInOut" }}
+            className="absolute inset-0 size-full object-cover"
+          />
+        </AnimatePresence>
       </motion.div>
 
       {/* Floating accent */}
