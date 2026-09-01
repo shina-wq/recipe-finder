@@ -15,9 +15,11 @@ let user = readUser();
 const listeners = new Set<() => void>();
 
 function persist() {
-  user
-    ? localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
-    : localStorage.removeItem(STORAGE_KEY);
+  if (user) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+  } else {
+    localStorage.removeItem(STORAGE_KEY);
+  }
   listeners.forEach((listener) => listener());
 }
 

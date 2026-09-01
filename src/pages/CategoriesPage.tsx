@@ -19,8 +19,13 @@ const SKELETON_COUNT = 8
 
 export function CategoriesPage() {
   const { mealType } = useParams()
-
   const category = MEAL_TYPES.find((meal) => meal.value === mealType)
+
+  const {data, isLoading, isError} = useQuery({
+    queryKey: recipeKeys.mealType(category?.value ?? mealType ?? ""),
+    queryFn: () => getRecipesByMealType(category!.value),
+    enabled: !!category,
+  })
 
   if (!category) {
     return (
@@ -37,11 +42,6 @@ export function CategoriesPage() {
       </div>
     )
   }
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: recipeKeys.mealType(category.value),
-    queryFn: () => getRecipesByMealType(category.value),
-  })
 
   return (
     <div className="bg-background/95">

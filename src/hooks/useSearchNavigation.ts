@@ -15,7 +15,11 @@ export function useSearchNavigation() {
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev)
-        trimmed.length >= MIN_QUERY_LENGTH ? next.set("q", trimmed) : next.delete("q")
+        if (trimmed.length >= MIN_QUERY_LENGTH) {
+          next.set("q", trimmed)
+        } else {
+          next.delete("q")
+        }
         return next
       },
       {replace: true},

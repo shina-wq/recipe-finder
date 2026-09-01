@@ -39,7 +39,11 @@ export const favoritesStore = {
   },
   toggle(userId: number, recipeId: number) {
     const next = new Set(getUserFavorites(userId))
-    next.has(recipeId) ? next.delete(recipeId) : next.add(recipeId)
+    if (next.has(recipeId)) {
+      next.delete(recipeId)
+    } else {
+      next.add(recipeId)
+    }
     persist(userId, next)
   },
   clear(userId: number) {

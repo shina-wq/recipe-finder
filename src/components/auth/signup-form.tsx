@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate } from "react-router-dom"
 import { ArrowRight, Loader2, Eye, EyeOff, Check, X } from "lucide-react"
@@ -30,12 +30,12 @@ export function SignupForm() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors, isSubmitting, touchedFields },
   } = useForm<SignUpValues>({ resolver: zodResolver(signUpSchema) })
 
-  const password = watch("password")
-  const confirmPassword = watch("confirmPassword")
+  const password = useWatch({control, name: "password"})
+  const confirmPassword = useWatch({control, name: "confirmPassword"})
   const confirmHasValue = confirmPassword?.length > 0
   const passwordsMatch = confirmHasValue && password === confirmPassword
   const showMismatch = confirmHasValue && !passwordsMatch && !!touchedFields.confirmPassword
@@ -166,7 +166,7 @@ export function SignupForm() {
                 className={cn(
                   AUTH_INPUT_CLASS,
                   "pr-16 transition-shadow",
--                  passwordsMatch && "ring-2 ring-success/40",
+                  passwordsMatch && "ring-2 ring-success/40",
                   showMismatch && "ring-2 ring-destructive/30",
                 )}
               />
