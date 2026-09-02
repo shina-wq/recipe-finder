@@ -41,7 +41,7 @@ export function RecipeStepper({ steps, currentStep, onStepClick, isStepClickable
             </button>
 
             {index < steps.length - 1 && (
-              <span className={cn("h-px flex-1", isComplete ? "bg-primary/40" : "bg-border")} />
+              <span className={cn("h-px flex-1", isComplete ? "bg-primary/40" : "bg-ink/15")} />
             )}
           </li>
         )
